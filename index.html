@@ -804,8 +804,11 @@ function removeImg() {
 function nextQ() {
   const q = questions[currentQ];
   const needsAnswer = ["mcq","yesno","rating"].includes(q.type);
-  if (needsAnswer && answers[q.id] === undefined) {
-    showToast("⚠️ Koi ek option select karein"); return;
+  const hasText = (answers[q.id + "_txt"] || "").trim() !== "";
+
+  // Allow proceeding if text is written — MCQ is not mandatory when text is provided
+  if (needsAnswer && answers[q.id] === undefined && !hasText) {
+    showToast("⚠️ Option select karein ya neeche apna jawab likhein"); return;
   }
   if (currentQ === questions.length - 1) { submitAll(); return; }
 
