@@ -701,13 +701,28 @@ function renderQuestion() {
 // ANSWER HANDLERS
 // ═══════════════════════════════════════════════════════
 function pickOpt(i) {
-  answers[questions[currentQ].id] = i;
-  document.querySelectorAll(".opt").forEach((el,idx) => el.classList.toggle("sel", idx===i));
-  document.querySelectorAll(".opt-dot").forEach((el,idx) => {
-    el.textContent = ['A','B','C','D'][idx];
-    el.style.background = idx===i ? "#1F3864" : "#e8eef5";
-    el.style.color = idx===i ? "#fff" : "#666";
-  });
+  const q = questions[currentQ];
+  const alreadySelected = answers[q.id] === i;
+
+  if (alreadySelected) {
+    // Tap same option again = deselect
+    delete answers[q.id];
+    document.querySelectorAll(".opt").forEach(el => el.classList.remove("sel"));
+    document.querySelectorAll(".opt-dot").forEach((el,idx) => {
+      el.textContent = ['A','B','C','D'][idx];
+      el.style.background = "#e8eef5";
+      el.style.color = "#666";
+    });
+  } else {
+    // Select new option
+    answers[q.id] = i;
+    document.querySelectorAll(".opt").forEach((el,idx) => el.classList.toggle("sel", idx===i));
+    document.querySelectorAll(".opt-dot").forEach((el,idx) => {
+      el.textContent = ['A','B','C','D'][idx];
+      el.style.background = idx===i ? "#1F3864" : "#e8eef5";
+      el.style.color = idx===i ? "#fff" : "#666";
+    });
+  }
   saveProgress();
 }
 
