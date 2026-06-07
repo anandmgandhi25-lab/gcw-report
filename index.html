@@ -804,7 +804,13 @@ function removeImg() {
 function nextQ() {
   const q = questions[currentQ];
   const needsAnswer = ["mcq","yesno","rating"].includes(q.type);
-  const hasText = (answers[q.id + "_txt"] || "").trim() !== "";
+
+  // Read text directly from DOM — fixes mobile timing issue where oninput lags
+  const extraEl = document.getElementById("extraTxt");
+  const liveText = extraEl ? extraEl.value.trim() : "";
+  if (liveText) answers[q.id + "_txt"] = liveText; // save immediately
+
+  const hasText = liveText !== "" || (answers[q.id + "_txt"] || "").trim() !== "";
 
   // Allow proceeding if text is written — MCQ is not mandatory when text is provided
   if (needsAnswer && answers[q.id] === undefined && !hasText) {
